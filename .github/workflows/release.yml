@@ -15,7 +15,7 @@ on:
       - 'docs/**'
       - '*.md'
     branches:
-      - master
+      - main
       - release/**
 
 concurrency:
