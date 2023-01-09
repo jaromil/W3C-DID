@@ -1,5 +1,5 @@
 {
-  "repositoryUrl": "git@github.com:jaromil/w3c-did.git",
+  "repositoryUrl": "git@github.com:jaromil/W3C-DID.git",
   "dryRun": true,
   "plugins": [
     "@semantic-release/changelog",
