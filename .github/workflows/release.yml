@@ -1,0 +1,46 @@
+name: 🚢 Release
+
+on:
+  workflow_run:
+    workflows:
+      - W3C-DID
+    types: [completed]
+    branches:
+      - master
+      - release/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  semantic-release:
+    name: 🤖 Semantic release
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.pull_request.labels.*.name, 'skip-release')"
+    # if: ${{ github.ref_name == 'master' && github.event_name == 'push' }}
+    outputs:
+      release: ${{ steps.tag_release.outputs.release }}
+      version: ${{ steps.tag_release.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Install semantic-release
+        run: |
+          npm i npx
+          npm i semantic-release/changelog
+      - name: Tag release
+        id: tag_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx semantic-release | tee semantic-release.log
+          if [[ `git tag --points-at HEAD` == "" ]]; then
+            echo "release=False" >> $GITHUB_OUTPUT
+          else
+            echo "release=True" >> $GITHUB_OUTPUT
+            awk '/Published release/ { printf("version=v%s\n",$8) }' semantic-release.log >> $GITHUB_OUTPUT
+          fi
