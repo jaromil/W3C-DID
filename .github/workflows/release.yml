@@ -1,9 +1,9 @@
-name: 🚢 Release
+name: Release
 
 on:
   workflow_run:
     workflows:
-      - W3C-DID
+      - Tests
     types: [completed]
     branches:
       - master
