@@ -1,10 +1,19 @@
 name: Release
 
+# on:
+#   workflow_run:
+#     workflows:
+#       - Tests
+#     types: [completed]
+#     branches:
+#       - master
+#       - release/**
+
 on:
-  workflow_run:
-    workflows:
-      - Tests
-    types: [completed]
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
     branches:
       - master
       - release/**
